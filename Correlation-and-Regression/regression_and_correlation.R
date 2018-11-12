@@ -4,7 +4,8 @@ library(ggplot2)
 library(tidyr)
 library(broom)
 
-setwd("C:/Users/njathar/Desktop/parcap-github/business-education/Correlation-and-Regression")
+#setwd("C:/Users/njathar/Desktop/parcap-github/business-education/Correlation-and-Regression")
+setwd("C:/Users/jatha/OneDrive/Desktop/parcap-github/business-education/Correlation-and-Regression")
 
 # Read in data external file
 pf <- read_xlsx("par_performance_data.xlsx", sheet = "performance_ts")
@@ -48,6 +49,6 @@ facet_manager_boxplot <- ggplot(data = pfg_current_managers, aes(y = Performance
 
 lm_pfg_current_managers <- lapply(list_pfg_current_managers, function(x) lm(Performance ~ SP500, x))
 
-#slopes <- sapply(lm_pfg_current_managers, function(x) coef(x))
+lm_broom_pfg_current_managers <- lapply(lm_pfg_current_managers, function(x) augment(x))
 
-
+(lm_broom_pfg_current_managers)
