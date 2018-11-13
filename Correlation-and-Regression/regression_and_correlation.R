@@ -5,7 +5,8 @@ library(tidyr)
 library(broom)
 
 #setwd("C:/Users/njathar/Desktop/parcap-github/business-education/Correlation-and-Regression")
-setwd("C:/Users/jatha/OneDrive/Desktop/parcap-github/business-education/Correlation-and-Regression")
+#setwd("C:/Users/jatha/OneDrive/Desktop/parcap-github/business-education/Correlation-and-Regression")
+setwd("C:/Users/Nikhil/Desktop/parcap-github/business-education/Correlation-and-Regression")
 
 # Read in data external file
 pf <- read_xlsx("par_performance_data.xlsx", sheet = "performance_ts")
@@ -51,4 +52,13 @@ lm_pfg_current_managers <- lapply(list_pfg_current_managers, function(x) lm(Perf
 
 lm_broom_pfg_current_managers <- lapply(lm_pfg_current_managers, function(x) augment(x))
 
-(lm_broom_pfg_current_managers)
+ggplot(data = lm_broom_pfg_current_managers$Chip, aes(x = SP500, y = Performance)) +
+	geom_point() +
+	geom_abline(data = data.frame(Intercept = coef(lm_pfg_current_managers$Chip)[1], Slope = coef(lm_pfg_current_managers$Chip)[2]),
+					aes(intercept = Intercept, slope = Slope),
+					color = "Blue")
+
+
+
+
+
