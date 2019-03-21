@@ -14,7 +14,8 @@ stock_cor <- returns %>% group_by(Security) %>%
 selected_stock <- "BYD"
 
 ggplot(data = filter(returns, Security == selected_stock), aes(y = StockReturn, x = SP500Return)) +
-     geom_point()
+     geom_point() +
+     geom_smooth(method = "lm", se = FALSE)
 
 ggplot(data = stock_cor , aes(y = corr, x = reorder(Security, corr))) +
      geom_bar(position = "dodge", stat = "identity") +
