@@ -8,7 +8,7 @@ stock_data <- read_xlsx("StockData.xlsx")
 months <- 12
 
 train <- stock_data[2:(months + 1), ]
-test <- stock_data[14:25, ]
+test <- stock_data[(months + 2):(months + ), ]
 
 stock_model <- lm(StockRet ~ BenchRet, train)
 
