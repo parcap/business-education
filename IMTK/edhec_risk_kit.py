@@ -18,18 +18,18 @@ def drawdown(return_series: pd.Series):
             'Drawdown': drawdowns
             })
     
-def skewness(r):    
+def skewness(returns):    
     '''
     Alternative to scipy.stats.skew()
     Computes the skewness of the supplied series or data frame
     Returns a float or a series
     '''
-    demeaned_r = r - r.mean()
-    sigma_r = r.std(ddof = 0)
-    exp = (demeaned_r ** 3).mean()
+    returns_demeaned = returns - returns.mean()
+    sigma_returns = returns.std(ddof = 0)
+    skewness = (returns_demeaned ** 3).mean() / (sigma_returns ** 3)
     
-    return exp / sigma_r ** 3
-    
+    return skewness
+
 def get_ffme_returns():    
     me_m = pd.read_csv('data/Portfolios_Formed_on_ME_monthly_EW.csv',
                    header = 0,
