@@ -22,11 +22,6 @@ def get_db_data(sql_stmt, db):
     
     data = pd.read_sql(sql_stmt, cnx)
     
-    data.set_index('date')
-    
-    data.index = pd.to_datetime(data.index, format='%Y-%m-%d')
-    data.index = data.index.to_period('D')
-    
     cnx.close()
     
     return data
