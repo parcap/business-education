@@ -15,6 +15,35 @@ def get_ind_returns():
     
     return ind
 
+def get_hfi_returns():    
+    '''
+    Load and format the EDHEC Hedge Fund Index Returns
+    '''
+    hfi = pd.read_csv('data/edhec-hedgefundindices.csv',
+                   header = 0,
+                   index_col = 0,
+                   parse_dates = True)
+
+    hfi = hfi / 100
+    hfi.index = hfi.index.to_period('M')
+    
+    return hfi
+
+def get_ffme_returns():    
+    me_m = pd.read_csv('data/Portfolios_Formed_on_ME_monthly_EW.csv',
+                   header = 0,
+                   index_col = 0,
+                   parse_dates = True,
+                   na_values = -99.99)
+
+    rets = me_m[['Lo 10', 'Hi 10']]
+    rets.columns = ['SmallCap', 'LargeCap']
+    rets = rets / 100
+    
+    rets.index = pd.to_datetime(rets.index, format = '%Y%m')
+    rets.index = rets.index.to_period('M')
+    
+    return rets
 
 def drawdown(return_series: pd.Series):
     '''
@@ -101,7 +130,7 @@ def var_gaussian(returns, level = 5, modified = False):
         k = kurtosis(returns)
         z = (z + (s / 6 * (z ** 2 -1)) +
                 (1 / 24 * (z ** 3 - 3 * z) * (k - 3)) -
-                (1 / 36 * (2 * z ** 3 - (s ** 2))))
+                (1 / 36 * (2 * z ** 3 - 5 * z) * (s ** 2)))
     
     return -(returns.mean() + z * returns.std(ddof = 0))
 
@@ -117,32 +146,30 @@ def cvar_historic(returns, level = 5):
     else:
         raise TypeError('Expected returns to be a series or data frame')
 
-def get_ffme_returns():    
-    me_m = pd.read_csv('data/Portfolios_Formed_on_ME_monthly_EW.csv',
-                   header = 0,
-                   index_col = 0,
-                   parse_dates = True,
-                   na_values = -99.99)
 
-    rets = me_m[['Lo 10', 'Hi 10']]
-    rets.columns = ['SmallCap', 'LargeCap']
-    rets = rets / 100
-    
-    rets.index = pd.to_datetime(rets.index, format = '%Y%m')
-    rets.index = rets.index.to_period('M')
-    
-    return rets
-
-def get_hfi_returns():    
+def annualize_rets(returns, periods_per_year):
     '''
-    Load and format the EDHEC Hedge Fund Index Returns
+    Annualizes a set of returns.
     '''
-    hfi = pd.read_csv('data/edhec-hedgefundindices.csv',
-                   header = 0,
-                   index_col = 0,
-                   parse_dates = True)
-
-    hfi = hfi / 100
-    hfi.index = hfi.index.to_period('M')
+    compound_growth = (1 + returns).prod()
+    n_periods = returns.shape[0]
     
-    return hfi
+    return compound_growth**(periods_per_year / n_periods) - 1
+
+def annualize_vol(returns, periods_per_year):
+    '''
+    Annualizes the vol of a set of returns.
+    '''
+    return returns.std() * np.sqrt(periods_per_year)
+
+def sharpe_ratio(returns, riskfree_rate, periods_per_year):
+    '''
+    Computes the annualized Sharpe ratio of a set of returns
+    '''
+    rf_per_period = (1 + riskfree_rate) ** (1 / periods_per_year) - 1
+    excess_ret = returns - rf_per_period
+    ann_ex_ret = annualize_rets(excess_ret, periods_per_year)
+    ann_vol = annualize_vol(returns, periods_per_year)
+    
+    return ann_ex_ret / ann_vol
+
