@@ -173,3 +173,14 @@ def sharpe_ratio(returns, riskfree_rate, periods_per_year):
     
     return ann_ex_ret / ann_vol
 
+def portfolio_return(weights, returns):
+    '''
+    Weights --> Returns
+    '''
+    return weights.T @ returns
+
+def portfolio_vol(weights, covmat):
+    '''
+    Weights --> Vol
+    '''
+    return np.sqrt(weights.T @ covmat @ weights)
