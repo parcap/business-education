@@ -1,4 +1,9 @@
 '''
+Systems Information
+import sys
+sys.version
+
+
 Python Data Types
 
 int      type(11)
