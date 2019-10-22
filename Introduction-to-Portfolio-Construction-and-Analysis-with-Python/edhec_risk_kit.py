@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import scipy.stats as sp
+from scipy.optimize import minimize
+
 
 # data import functions
 def get_ind_returns():
@@ -173,7 +175,7 @@ def sharpe_ratio(returns, riskfree_rate, periods_per_year):
     
     return ann_ex_ret / ann_vol
 
-def portfolio_return(weights, returns):
+/def portfolio_return(weights, returns):
     '''
     Weights --> Returns
     '''
@@ -184,3 +186,122 @@ def portfolio_vol(weights, covmat):
     Weights --> Vol
     '''
     return np.sqrt(weights.T @ covmat @ weights)
+
+def optimal_weights(n_points, er, cov):
+    '''
+    --> list of weights to run the optimizer on to minimize the vol
+    '''
+    target_rs = np.linspace(er.min(), er.max(), n_points)
+    weights = [minimize_vol(target_return, er, cov) \
+               for target_return in target_rs]
+    return weights
+
+def gmv(cov):
+    '''
+    Returns the weight of the Global Minimum Volatility portfolio
+    given the covariance matrix
+    '''
+    n = cov.shape[0]
+    return msr(0, np.repeat(1, n), cov)
+
+def plot_ef(n, er, cov, line_style = '.-', show_cml = False, rfr = 0,
+            show_ew = False, show_gmv = False):
+    '''
+    Plots a two asset efficient frontier
+    '''
+    weights = optimal_weights(n, er, cov)
+    rets = [portfolio_return(w, er) for w in weights]
+    vols = [portfolio_vol(w, cov) for w in weights]
+    ef = pd.DataFrame({'Returns': rets, 'Volatility': vols})
+
+    ax = ef.plot.line(x = 'Volatility', y = 'Returns', style = line_style)
+    
+    # naive portfolio 0 - equal weighted
+    if show_ew:
+        n = er.shape[0]
+        w_ew = np.repeat(1 / n, n)
+        r_ew = portfolio_return(w_ew, er)
+        vol_ew = portfolio_vol(w_ew, cov)
+        ax.plot([vol_ew], [r_ew], color = 'goldenrod',
+                marker = 'o', markersize = 12)
+    
+    # global minimum volatility portfolio - doesn't need return estimates89-    if show_gmv:
+        w_gmv = gmv(cov)
+        r_gmv = portfolio_return(w_gmv, er)
+        vol_gmv = portfolio_vol(w_gmv, cov)
+        ax.plot([vol_gmv], [r_gmv], color = 'midnightblue',
+                marker = 'o', markersize = 12)
+        
+    if show_cml:
+        ax.set_xlim(left = 0)
+        w_msr = msr(rfr, er, cov)
+        r_msr = portfolio_return(w_msr, er)
+        vol_msr = portfolio_vol(w_msr, cov)
+
+        cml_x = [0, vol_msr]
+        cml_y = [rfr, r_msr]
+
+        ax.plot(cml_x, cml_y, color = 'green', marker = 'o',
+                linestyle = 'dashed', markersize = 12, linewidth = 2)
+        
+
+    return ax
+
+def minimize_vol(target_return, er, cov):
+    '''
+    target_ret --> W
+    '''
+    n = er.shape[0]
+    init_guess = np.repeat(1 / n, n)
+    bounds = ((0.0, 1.0), ) * n
+    return_is_target = {
+            'type': 'eq',
+            'args': (er, ),
+            'fun': lambda weights, er: target_return - \
+                            portfolio_return(weights, er)
+            }
+    weights_sum_to_1 = {
+            'type': 'eq',
+            'fun': lambda weights: np.sum(weights) - 1
+            }
+    results = minimize(portfolio_vol,
+                       init_guess,
+                       args = (cov,),
+                       method = 'SLSQP',
+                       options = {'disp': False},
+                       constraints = (return_is_target, weights_sum_to_1),
+                       bounds = bounds
+                       )
+    return results.x
+
+def msr(riskfree_rate, er, cov):
+    '''
+    Riskfree rate + ER + COV --> W
+    '''
+    n = er.shape[0]
+    init_guess = np.repeat(1 / n, n)
+    bounds = ((0.0, 1.0), ) * n
+
+    weights_sum_to_1 = {
+            'type': 'eq',
+            'fun': lambda weights: np.sum(weights) - 1
+            }
+    
+    def neg_sharpe_ratio(weights, riskfree_rate, er, cov):
+        '''
+        Returns the negative of the sharpe ratio, given weights
+        '''
+        r = portfolio_return(weights, er)
+        vol = portfolio_vol(weights, cov)
+        
+        return -(r - riskfree_rate) / vol
+    
+    results = minimize(neg_sharpe_ratio,
+                       init_guess,
+                       args = (riskfree_rate, er, cov,),
+                       method = 'SLSQP',
+                       options = {'disp': False},
+                       constraints = (weights_sum_to_1),
+                       bounds = bounds
+                       )
+    return results.x
