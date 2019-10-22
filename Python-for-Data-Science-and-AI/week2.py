@@ -18,7 +18,7 @@ tuple3 = tuple1 + tuple2
 
 tuple3 --> ("disco", 10, 1.2, "hard rock", 10)
 
-tuple3[1:3] --> {10, 1.2}
+tuple3[1:3] --> (10, 1.2)
 len(tuple3) --> 5
 
 Tuples are IMMUTABLE
@@ -35,12 +35,14 @@ nested_tuple[2][0] --> "pop"
 nested_tuple[2][0][1] --> "o"
 nested_tuple[4][1][1] --> 2
 
+tuple1.index(10)
+
 
 Lists
 
 Lists are also ordered sequences.
 Lists are written as comma-separated elemnts within square brackets.
-Unlike tuples, lists are immutable.
+Unlike tuples, lists are MUTABLE.
 
 list1 = ["Michael Jackson", 10.1, 1982, (12, 13, "alpha")]
 list1[0] --> "Michael Jackson"
@@ -54,7 +56,7 @@ list3 = list1 + list2
 list3 --> ["Michael Jackson", 10.1, 1982, (12, 13, "alpha"), "Hello", 2]
 
 list4 = ["Hello", "there"]
-list4.extend(["How", "are", 3])
+list4.extend(["How", "are", 3])  <-- use extend carefully!!
 
 list4 --> ["Hello", "there", "How", "are", 3]
 len(list4) --> 5
@@ -84,4 +86,21 @@ B = A[:}   <-- in this case B is a cloned version of A
                and therefore are not referencing the same list
                
 help(A)   <-- gets help of the object in parentheses
+
+
+Dictionaries
+
+Dictionaries are denoted by { }
+The keys have to be unique and are IMMUTABLE
+The values can be immutable, mutable, and duplicates
+Each key-value pair is separated by a comma
+
+websters = {"A": 1, "B": "2", "C": [3, 3, 3], "D": (4, 4, 4), "E": 5, "F": 6}
+
+websters["D"] = (4, 4, 4)
+websets["G"] = ["Hello", "there!"]   <-- adds a new entry to the dictionary
+del(websters["E"])   <-- deletes the row indexed by "E"
+"F" in websters   <-- checks if index is in dict
+websters.keys()   <-- generates a dict_list of all index entries
+websters.values()   <-- generates a dict_values of all values entries
 '''
