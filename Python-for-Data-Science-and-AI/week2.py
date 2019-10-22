@@ -103,4 +103,22 @@ del(websters["E"])   <-- deletes the row indexed by "E"
 "F" in websters   <-- checks if index is in dict
 websters.keys()   <-- generates a dict_list of all index entries
 websters.values()   <-- generates a dict_values of all values entries
+
+
+Sets
+
+Sets are created using { }
+album_list = [...]
+album_set = set(album_list)   <-- converts list to a set
+
+A = {'AC/DC', 'Back in Black', 'Thriller'}
+A.add('NSYNC')   <-- adds only non-unqiue element to a set
+A.remove('AC/DC')   <-- removes an item from a set
+'AC/DC' in A   <-- test to see if an item is in a set
+
+set1 & set2   <-- returns the intersections
+set1.union(set2)   <-- returns the union
+set1.issubset(set2)   <-- checks if set1 is a subset of set2
+set1.issuperset(set2)   <-- checks if set1 is a superset of set2
+set1.difference(set2)   <-- find the what is in set1 but not in set2
 '''
