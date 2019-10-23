@@ -28,7 +28,7 @@ Logical Operators
 and
 or
 not
-'''    
+   
 
 # List syntax version 1
 squares = ['Red', 'Yellow', 'Green']
@@ -72,3 +72,17 @@ while(dates[i] != 1973):
     i = i + 1
     
 print(year)
+
+
+Function
+
+def add(a):
+    b = a + 1
+    print(a, 'if you add one', b)
+    return b
+'''
+
+def add(a):
+    b = a + 1
+    print(a, 'if you add one', b)
+    return b
