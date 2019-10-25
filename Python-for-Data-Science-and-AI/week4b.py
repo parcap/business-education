@@ -68,3 +68,52 @@ print(y)
 ls = np.linspace(0, 2 * np.pi, 100)
 sin_ls = np.sin(ls)
 plt.plot(ls, sin_ls)
+
+
+# create a 2D numpy array
+a = [[11, 12, 13], [21, 22, 23], [31, 32, 33]]
+
+A = np.array(a)
+
+print(A)
+print(type(A))
+print(A.dtype)
+print(A.ndim)
+print(A.shape)
+print(A.size)
+
+B = A[1, 2]
+print(B)
+
+C = A[1][2]
+print(C)
+
+D = A[0][0:2]
+print(D)
+print(type(D))
+
+E = A[0, 0:2]
+print(E)
+print(type(E))
+
+F = A[:]
+print(F)
+
+G = A + 1   # broadcasting
+print(G)
+
+H = np.sin(A)
+print(H)
+
+TP = A.T
+print(TP)
+
+
+X = np.array([[0, 1, 1], [1, 0, 1]])
+Y = np.array([[1, 1], [1, 1], [-1, 1]])
+
+print(X)
+print(Y)
+
+DP = np.dot(X,Y)
+print(DP)
