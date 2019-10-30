@@ -14,14 +14,13 @@ def open_par_masterdata_connection(db):
                              'Server=parcap-sql01;'
                              'Database=par_bi;'
                              'Trusted_Connection=yes;')
+    
     return cnx
 
 def get_db_data(sql_stmt, db):
     
     cnx = open_par_masterdata_connection(db)
-    
     data = pd.read_sql(sql_stmt, cnx)
-    
     cnx.close()
     
     return data
