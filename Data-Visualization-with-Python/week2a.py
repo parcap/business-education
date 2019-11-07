@@ -65,7 +65,7 @@ show_plot(df_canada_year, plot_kind="hist",  figsize=set_figsize,
           y_label="Number of Countries",
           x_label="Number of Immigrants")
 
-# Generate immigration by yeaer for a given country as a bar chart
+# Generate immigration by year for a given country as a bar chart
 df_canada_country = df_canada.loc[country_of_interest, years]
 show_plot(df_canada_country, plot_kind="barh", figsize=set_figsize,
           plot_title="Immigration to Canada by Year",

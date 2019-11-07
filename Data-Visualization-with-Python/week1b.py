@@ -30,7 +30,7 @@ df_can = pd.read_excel(
             skip_footer = 2)
 
 # df_can.head())
-#   df_can.tail()
+# df_can.tail()
 # df_can.dtypes
 # df_can.info()
 # df_can.columns   <-- pandas.core.indexes.base.Index
@@ -38,9 +38,9 @@ df_can = pd.read_excel(
 # df_can.columns.values   <-- numpy.ndarray
 # df_can.index.values   <-- numpy.ndarray
 # df_can.index.tolist()
-#   df_can.index.values.tolist()
+# df_can.index.values.tolist()
 # df_can.columns.tolist()
-#   df_can.columns.values.tolist()
+# df_can.columns.values.tolist()
 # df_can.shape   <-- returns a tuple
 
 # axis = 0 refers to rows,   axis = 1 refers to columns
@@ -108,7 +108,7 @@ condition2 = (df_can['Continent'] == 'Asia') & \
 # mpl.style.use(['ggplot'])
 
 # generate a pandas series --> haiti
-haiti = df_can.loc['Haiti', years]   
+haiti = df_can.loc['Haiti', years]
 
 haiti.plot()
 plt.show()
